@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script src="https://unpkg.com/three@0.140.2/build/three.min.js"></script>
+        <script>
+            /*
+                https://ics.media/tutorial-three/quickstart/
+            */
+            
+            // ページの読み込みを待つ
+            // ブラウザが HTML を完全に読み込み、DOM ツリーは構築されるが、写真 <img> のような外部リソースやスタイルシートはまだ読み込まれていない可能性がある
+            // https://ja.javascript.info/introduction-browser-events
+            window.addEventListener("DOMContentLoaded", init);
+
+            function init() {
+                // サイズ
+                const width = 960;
+                const height = 540;
+
+                // レンダラー
+                // 3D空間のレンダリングを行います。レンダリングとは、Three.jsで計算した3Dのオブジェクトを画面に表示することです。内部的にはThree.jsがWebGLのAPIを使って、GPUで座標を計算させ画面に表示
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: document.querySelector("#myCanvas")
+                });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(width, height);
+
+                // シーン
+                // 3Dの空間を表すクラス。3Dのオブジェクトはシーンにadd()メソッドを利用して追加することで表示
+                const scene = new THREE.Scene();
+
+                // カメラ
+                // 3D空間を撮影するカメラ。視点を制御
+                const camera = new THREE.PerspectiveCamera(45, width/height);
+                camera.position.set(0, 0, +1000);
+
+                // 箱（オブジェクト）
+                const geometry = new THREE.BoxGeometry(400, 400, 400); // 形状の情報; 箱状
+                const material = new THREE.MeshNormalMaterial(); // 素材の情報; 適当な色を配置
+                const box = new THREE.Mesh(geometry, material); // 表示オブジェクト
+                scene.add(box); // シーンに追加
+
+                tick();
+
+                function tick() {
+                    box.rotation.y += 0.01;
+                    renderer.render(scene, camera);
+
+                    // https://www.webdesignleaves.com/pr/jquery/requestAnimationFrame.html
+                    // 基本的な使い方は、requestAnimationFrame() に指定するコールバック関数を定義して、そのコールバック関数の中で requestAnimationFrame() を使って自身を呼び出すことで、ブラウザの描画のタイミングに合わせてコールバック関数を繰り返し実行（ループ）
+                    requestAnimationFrame(tick);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas"></canvas>
+    </body>
+</html>
